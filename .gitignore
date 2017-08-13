@@ -1,0 +1,6 @@
+.DS_Store
+composer.lock
+/coverage
+/docs/*
+/vendor
+/tests/logs/*
