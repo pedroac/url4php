@@ -1,0 +1,4 @@
+http, 80
+https, 443
+imap, 143
+pop, 110
