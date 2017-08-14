@@ -6,7 +6,12 @@ php:
   - 7.1
   - master
 
+env:
+  global:
+    - secure: "M4pqMztAXiVhGwrB+faDILj7MGXaM36LYC5qA0GhUPs66XsPl9v1eSwEmibOWbsetHf3VbG4zbUe0PuRN21jth6Zw1i6Wpjn7rI1NyKDeqsBGiNIA6DywhA1uvaId8naESMMIFjxuWWEaYmx1Ur5HLqnLZ9uDEWxquVU0TgHMoTcUyjE9rX+I80qdrWdxHy/Tiios5usOwoHEXREsvu4/4AfpILv73jFn6GrWmr1GlYS/Jg6njJApqxv5XvNa+fv7MBsKxH7QxEOa0tYqsteH8VcjnIzDUQyZerRSBjEsbb784d9n6H3ByUoiQjSRiXDK6S7//7rFg01hCXKSCVxqjoIUda1wcyl1EV3ytfvPFyCIEiRSTB2GdFTM8/ZdxKh7yb5QIUF0L+6aiKNtzV0Mv4fU1IS4ihHP8MhogMBjZxd6kNsA7GMa+vK+FKRIGVFw5UH61gmiWqx1kLaZXM8RhriDPjKcFIC6aKFjsG1yzoDd+OrX5XLb57wWvQCGg5yllbhXGSmFO9j5Wq3p7k6Cb2Vp0RNxtE5bIynX7UGTNv6zDTX0ciwczBdgWut1Tmq6KYKfKNy3nQ7DvBXLLkhLBBxPbGZ0NetOnbrmflS3SwVpaC6ZKI52FwcwAMV1og9mL2Mw0awVrCoxq5Fgii+5TxWHcQ8d7j0OXdIcZpMzZ0="
+
 before_install:
+  - openssl aes-256-cbc -K $encrypted_a29d7df4f8ae_key -iv $encrypted_a29d7df4f8ae_iv -in github_deploy_key.enc -out github_deploy_key -d
   - composer self-update
   - composer clear-cache
 
