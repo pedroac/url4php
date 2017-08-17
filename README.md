@@ -37,7 +37,7 @@ Add to your `composer.json` file:
 }
 ```
 
-And execute from the library root:
+And execute:
 ```bash
 composer.phar update
 ```
