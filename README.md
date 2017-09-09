@@ -7,18 +7,32 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Support via PayPal](https://img.shields.io/badge/Donate-PayPal-green.svg)](http://paypal.me/pedroac)
 
-* URL value object, parser, normalization rules and URI components library tools.
-* The implementations should follow the RFC 3986 and RFC 1738 standards.
-* It's assumed that the input might have Unicode characters.
-* The API is designed for readable code and to help mistakes detection.
-* Most classes instantiate immutable objects.
-* The code is heavily tested with PHPUnit and it's prepared for automatic documentation generation.
+URL value object, parser, normalization rules and URI components library tools, following the RFC 3986 and RFC 1738 standards.
+
+## Table of contents
+
+* [Getting started](#getting-started)
+    * [Prerequisites](#prerequisites)
+    * [Installing](#installation)
+* [Code examples](#code-examples)
+    * [Parsing an URL](#parsing-an-url)
+    * [Changing an URL (immutable)](#changing-an-url-immutable)
+    * [Parsing and changing URL components](#parsing-and-changing-url-components)
+    * [Converting URL to absolute URL](#converting-url-to-absolute-url)
+    * [Getting the current URL](#getting-the-current-url)
+    * [Checking if an URL is absolute](#checking-if-an-url-is-absolute)
+    * [Getting path extensions](#getting-path-extensions)
+    * [Applying non-destructive normalization rules](#applying-non-destructive-normalization-rules)
+    * [Applying common normalization rules](#applying-common-normalization-rules)
+    * [Applying selected or customized normalization rules](#applying-selected-or-customized-normalization-rules)
+    * [Applying common normalization rules and other selected rules](#applying-common-normalization-rules-and-other-selected-rules)
+* [Authors](#authors)
 
 ## Getting started
 
 ### Prerequisites
 
-* PHP 7.1 or greater: http://php.net/downloads.php
+* PHP 7.1 or later: http://php.net/downloads.php
 * composer: https://getcomposer.org
 
 ### Installing
@@ -92,7 +106,7 @@ echo $newUrl->changeParameters(['c' => 3]);
 ```
 
 ### Parsing and changing URL components
-If the URL is going to be changed several times, parse it and replace the components:
+
 ```php
 <?php
 use pedroac\url\URL;
@@ -111,7 +125,10 @@ echo $newUrl;
 // https://test.com/my/new/path?a=1
 ```
 `pedroac\url\URL::parse` method returns an immutable object (`pedroac\url\Parsed`).
+
 `pedro\url\Parsed::toComponents` method returns a mutable object.
+
+Safe normalizations are applied.
 
 ### Converting URL to absolute URL
 ```php
@@ -125,7 +142,7 @@ echo $newUrl;
 // http://test.com/this/my/path
 ```
 
-Getting the current URL:
+### Getting the current URL
 ```php
 <?php
 use pedroac\url\URL;
@@ -133,7 +150,7 @@ use pedroac\url\URL;
 echo URL::getCurrent();
 ```
 
-### Check if an URL is absolute
+### Checking if an URL is absolute
 ```php
 <?php
 use pedroac\url\URL;
@@ -143,7 +160,52 @@ var_dump($url->isAbsolute());
 // bool(true)
 ```
 
-### Normalizing an URL
+### Getting path extensions
+
+```php
+<?php
+use pedroac\url\Parsed;
+
+$parsed = Parsed::fromString('http://test.com/my/path/file.tar.gz');
+
+echo $parsed->path->getExtension();
+// gz
+echo print_r($parsed->path->getAllExtensions());
+/*
+Array
+(
+    [0] => tar
+    [1] => gz
+)
+*/
+```
+
+### Applying non-destructive normalization rules
+
+```php
+<?php
+use pedroac\url\URL;
+use pedroac\url\normalization\Rules;
+
+$rules = Rules::safe();
+echo $rules->apply(new URL('HttP://TesT.com/my/path?a=1&b=2&f=3'));
+// http://test.com/my/path?a=1&b=2&f=3
+```
+
+### Applying common normalization rules
+
+```php
+<?php
+use pedroac\url\URL;
+use pedroac\url\normalization\Rules;
+
+$rules = Rules::basic();
+echo $rules->apply(new URL('HttP://TesT.com/my/.//path?b=1&c=2&a=3')), "\n";
+// http://test.com/my/path/?a=3&b=1&c=2
+```
+
+### Applying selected or customized normalization rules
+
 ```php
 <?php
 use pedroac\url\URL;
@@ -168,18 +230,22 @@ echo $newUrl;
 // http://test.com/my/path?a=1
 ```
 
-Or use a a static method for convenience (recommended):
+### Applying common normalization rules and other selected rules
+
 ```php
 <?php
+require __DIR__ . '/../vendor/autoload.php';
+
 use pedroac\url\URL;
-use pedroac\url\normalization\rule\Rules;
+use pedroac\url\normalization\Rules;
 use pedroac\url\normalization\rule\StripUnusedParametersRule;
 use pedroac\url\normalization\rule\StripDefaultParametersRule;
 
-$rules = Rules::basicAnd(new StripDefaultParametersRule(['b'=>2]),
-                         new StripUnusedParametersRule(['a','b']));
-echo $rules->apply(new URL('http://test.com/my/path?a=1&b=2&f=3'));
-// http://test.com/my/path/?a=1
+$rules = Rules::basicAnd(
+    new StripUnusedParametersRule(['a','b','c']),
+    new StripDefaultParametersRule(['b'=>2])
+);
+echo $rules->apply(new URL('HttP://TesT.com/my/.//path?b=2&c=2&a=3')), "\n";
 ```
 
 ## Authors
