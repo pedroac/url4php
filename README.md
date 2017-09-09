@@ -234,8 +234,6 @@ echo $newUrl;
 
 ```php
 <?php
-require __DIR__ . '/../vendor/autoload.php';
-
 use pedroac\url\URL;
 use pedroac\url\normalization\Rules;
 use pedroac\url\normalization\rule\StripUnusedParametersRule;
