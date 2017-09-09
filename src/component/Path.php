@@ -7,6 +7,9 @@
  */
 namespace pedroac\url\component;
 
+use pedroac\url\component\Path\SegmentsList;
+use pedroac\url\component\Path\Segment;
+
 /**
  * Path URI component.
  * It should be immutable.
@@ -94,23 +97,7 @@ class Path
      */
     public function toArray(): array
     {
-        if ($this->value === '' || $this->value === '/') {
-            return [];
-        }
-        if ($this->value === '//') {
-            return [''];
-        }
-
-        $offset = 0;
-        $length = null;
-        if (mb_substr($this->value, 0, 1) === '/') {
-            $offset = 1;
-        }
-        if (mb_substr($this->value, -1) === '/') {
-            $length = -1;
-        }
-        $splits = mb_split('[/]', mb_substr($this->value, $offset, $length));
-        return $splits;
+        return SegmentsList::fromPath($this)->toArray();
     }
 
     /**********
@@ -193,15 +180,13 @@ class Path
             return $this;
         }
 
-        $segments = $resolve ? $this->resolveSegments($removeEmptySegments) : $this->toArray();
-        for ($level = 0; $level < $levelsNumber; ++$level) {
-            if (array_pop($segments) === null) {
-                break;
-            }
-        }
-
+        $segments = SegmentsList::fromPath($this)->levelUp(
+            $levelsNumber,
+            $resolve,
+            $removeEmptySegments
+        );;
         $path = clone $this;
-        $path->value = join('/', $segments) . '/';
+        $path->value = join('/', $segments->toArray()) . '/';
         if ($path->value !== '/' && mb_substr($this->value, 0, 1)==='/') {
             $path->value = '/'.$path;
         }
@@ -217,7 +202,10 @@ class Path
     public function resolve(bool $removeEmptySegments = false): self
     {
         $path = clone $this;
-        $path->value = join('/', $this->resolveSegments($removeEmptySegments));
+        $path->value = join(
+            '/',
+            SegmentsList::fromPath($this)->resolve($removeEmptySegments)->toArray()
+        );
         if (mb_substr($this->value, 0, 1)==='/') {
             $path->value= '/'.$path;
         }
@@ -228,27 +216,6 @@ class Path
             $path->value .= '/';
         }
         return $path;
-    }
-
-    /**
-     * Remove the dot-segments resolving the path according to RFC 3986.
-     * @param  bool  $removeEmptySegments Should remove empty segments (ie:duplicated slashes)?
-     * @return array                      The resolved path segments.
-     * @codeCoverageIgnore
-     */
-    private function resolveSegments(bool $removeEmptySegments = false): array
-    {
-        $newSegments = array();
-        foreach ($this->toArray() as $segment) {
-            if ($segment === '.' || ($segment==='' && $removeEmptySegments)) {
-                continue;
-            } elseif ($segment === '..') {
-                array_pop($newSegments);
-                continue;
-            }
-            $newSegments []= $segment;
-        }
-        return $newSegments;
     }
 
     /**********
@@ -296,17 +263,17 @@ class Path
      *  - The last segment of "/hello/world" is "world".
      *  - The last segment of "/hello/world/" is also "world".
      *  - But the las segment of "/hello/world//" is "".
-     * @return string The last segment.
+     * @return Segment The last segment.
      */
-    public function getLastSegment(): string
+    public function getLastSegment(): Segment
     {
         if ($this->value === '' || $this->value === '/') {
-            return '';
+            return new Segment('');
         }
 
         $slashPosition = mb_strrpos($this->value, '/');
         if ($slashPosition === false) {
-            return $this->value;
+            return new Segment($this->value);
         }
 
         $length = null;
@@ -316,7 +283,7 @@ class Path
         }
 
         $start = ($slashPosition === false) ? 0 : ($slashPosition+1);
-        return mb_substr($this->value, $start, $length);
+        return new Segment(mb_substr($this->value, $start, $length));
     }
 
     /**
@@ -373,16 +340,7 @@ class Path
      */
     public function getExtension(): string
     {
-        $basename = $this->getLastSegment();
-        if ($basename === '') {
-            return '';
-        }
-
-        $position = mb_strrpos($basename, '.');
-        if (!$position) {
-            return '';
-        }
-        return mb_substr($basename, $position+1);
+        return $this->getLastSegment()->getExtension();
     }
 
     /**
@@ -395,16 +353,6 @@ class Path
      */
     public function getAllExtensions(): array
     {
-        $basename = $this->getLastSegment();
-        if ($basename === '') {
-            return [];
-        }
-
-        $position = mb_strpos($basename, '.');
-        if (!$position) {
-            return [];
-        }
-        $extensionsStr = mb_substr($basename, $position+1);
-        return mb_split('[.]', $extensionsStr);
+        return $this->getLastSegment()->getAllExtensions();
     }
 }
