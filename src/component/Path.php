@@ -295,20 +295,18 @@ class Path
      * Find the path directory.
      * The path directory is the path without its basename.
      * Examples:
-     * - The "/hello/world" directory is "/hello/".
-     * - The "/hello/world/" directory is "/hello/world/".
-     * @return self The directory os an empty path.
+     * - The "/hello/world" directory is "/hello/"
+     * - The "/hello/world/" directory is "/hello/world/"
+     * - The "/hello/world/.." directory is "/hello/world/.."
+     * 
+     * @return self The directory or an empty path.
      */
     public function getDirectory(): self
     {
-        if ($this->isDirectory()) {
-            return $this;
-        }
-        $lastSlashPosition = mb_strrpos($this->value, '/');
-        if ($lastSlashPosition === false) {
+        if (!preg_match('~^/?(?:\w*/)*(?:[.]{1,2}$)?~u', $this->value, $matches)) {
             return new self;
         }
-        return new self(mb_substr($this->value, 0, $lastSlashPosition+1));
+        return new self($matches[0]);
     }
 
     /**
