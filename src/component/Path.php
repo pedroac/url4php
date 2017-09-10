@@ -257,6 +257,7 @@ class Path
      *  - The last segment of "/hello/world" is "world".
      *  - The last segment of "/hello/world/" is also "world".
      *  - But the las segment of "/hello/world//" is "".
+     * 
      * @return Segment The last segment.
      */
     public function getLastSegment(): Segment
@@ -264,20 +265,8 @@ class Path
         if ($this->value === '' || $this->value === '/') {
             return new Segment('');
         }
-
-        $slashPosition = mb_strrpos($this->value, '/');
-        if ($slashPosition === false) {
-            return new Segment($this->value);
-        }
-
-        $length = null;
-        if ($slashPosition === mb_strlen($this->value)-1) {
-            $slashPosition = mb_strrpos($this->value, '/', -2);
-            $length = -1;
-        }
-
-        $start = ($slashPosition === false) ? 0 : ($slashPosition+1);
-        return new Segment(mb_substr($this->value, $start, $length));
+        preg_match('~/?([^/]*)/?$~u', $this->value, $matches);
+        return new Segment($matches[1]);
     }
 
     /**
