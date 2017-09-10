@@ -274,21 +274,18 @@ class Path
      * The base name is the segment on the right side of the right-most slash.
      * Examples:
      * - The "/hello/world" base name is "world".
-     * - The "/hello/world/" and "/hello/world/." don't have a base name (an
-     *   empty string should be returned).
-     * @return self The basename or an empty path.
+     * - The "/hello/world/", "/hello/world/." and "/hello/world/.." don't have a base name
+     *   (an empty string should be returned).
+     * 
+     * @return Segment The basename or an empty segment.
      */
-    public function getBase(): self
+    public function getBase(): Segment
     {
-        $lastSlashPosition = mb_strrpos($this->value, '/');
-        if ($lastSlashPosition === false) {
-            return new self;
+        $lastWithSlash = mb_strrchr($this->value, '/');
+        if (in_array($lastWithSlash, ['/', '/..', '/.'])) {
+            return new Segment();
         }
-        $segment = mb_substr($this->value, $lastSlashPosition+1);
-        if ($segment === '.' || $segment === '..') {
-            return new self;
-        }
-        return new self($segment);
+        return new Segment(ltrim($lastWithSlash, '/'));
     }
 
     /**
