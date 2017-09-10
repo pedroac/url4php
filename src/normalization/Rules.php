@@ -36,7 +36,7 @@ class Rules
      * or self::basic, or self::basicAnd static methods.
      * @param Rule[] $rules Rules that should be applied.
      */
-    public function __construct(Rule...$rules)
+    public function __construct(Rule ...$rules)
     {
         $this->rules = $rules;
     }
@@ -56,7 +56,7 @@ class Rules
      * @param  Rule[] $rules Extra rules that should be applied.
      * @return self
      */
-    public static function safeAnd(Rule...$rules): self
+    public static function safeAnd(Rule ...$rules): self
     {
         $obj = self::safe();
         foreach ($rules as $rule) {
@@ -86,7 +86,7 @@ class Rules
      * @param  Rule[] $rules Extra rules that should be applied.
      * @return self
      */
-    public static function basicAnd(Rule...$rules): self
+    public static function basicAnd(Rule ...$rules): self
     {
         $obj = self::basic();
         foreach ($rules as $rule) {

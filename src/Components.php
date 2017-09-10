@@ -81,11 +81,11 @@ class Components
      * @param Fragment    $fragment
      */
     public function __construct(
-        Scheme      $scheme    = null,
-        Authority   $authority = null,
-        Path        $path      = null,
-        Query       $query     = null,
-        Fragment    $fragment  = null
+        Scheme $scheme = null,
+        Authority $authority = null,
+        Path $path = null,
+        Query $query = null,
+        Fragment $fragment = null
     ) {
         $this->scheme   = $scheme ? : new Scheme();
         $this->path     = $path ? : new Path;

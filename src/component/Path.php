@@ -184,10 +184,10 @@ class Path
             $levelsNumber,
             $resolve,
             $removeEmptySegments
-        );;
+        );
         $path = clone $this;
         $path->value = join('/', $segments->toArray()) . '/';
-        if ($path->value !== '/' && mb_substr($this->value, 0, 1)==='/') {
+        if ($path->value !== '/' && mb_substr($this->value, 0, 1) === '/') {
             $path->value = '/'.$path;
         }
         return $path;

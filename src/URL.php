@@ -75,7 +75,7 @@ class URL
     }
 
     /**
-     * Build URL base (scheme and authority) from the global $_SERVER 
+     * Build URL base (scheme and authority) from the global $_SERVER
      * variable or a similar associative array.
      * @return string URL base.
      * @codeCoverageIgnore
@@ -87,7 +87,7 @@ class URL
             $isSSL = (isset($vars['HTTPS']) && $vars['HTTPS'] !== 'off');
             $scheme = ($isSSL ? 'https' : 'http');
         }
-        
+
         $value = "$scheme://{$vars['SERVER_NAME']}";
         if (!SchemesPortsMap::default()->isSchemePort($scheme, $vars['SERVER_PORT'])) {
             $value .= ":{$vars['SERVER_PORT']}";

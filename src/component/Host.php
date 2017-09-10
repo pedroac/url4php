@@ -103,7 +103,7 @@ class Host
 
             case self::TYPE_IPV4:
                 return inet_ntop(inet_pton($this->value));
-            
+
             case self::TYPE_IPV6:
                 $ipAddress = substr($this->value, 1, -1);
                 return '['.inet_ntop(inet_pton($ipAddress)).']';

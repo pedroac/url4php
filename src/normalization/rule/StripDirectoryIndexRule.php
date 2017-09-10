@@ -55,7 +55,7 @@ class StripDirectoryIndexRule implements Rule
         }
         $this->indexDirectories = self::$defaultIndexDirs;
     }
-    
+
     /**
      * Create a new object with an index directories list loaded from a file.
      * Each line should have an index directory, eg:

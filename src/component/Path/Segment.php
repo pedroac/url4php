@@ -27,7 +27,7 @@ class Segment
      *
      * @param string $value Path segment.
      */
-    public function __construct(string $value='')
+    public function __construct(string $value = '')
     {
         if (strpos($value, '/') !== false) {
             throw new \DomainException('Path segment may not have slashes: ' . $value);

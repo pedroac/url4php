@@ -24,7 +24,7 @@ class SchemesPortsMap
 
     /**
      * Create a new schemes/port map.
-     * @param array $map Associative array. The keys should be schemes, the values 
+     * @param array $map Associative array. The keys should be schemes, the values
      *                   should be ports numbers.
      */
     public function __construct(array $map)
