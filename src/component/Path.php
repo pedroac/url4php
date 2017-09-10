@@ -282,6 +282,9 @@ class Path
     public function getBase(): Segment
     {
         $lastWithSlash = mb_strrchr($this->value, '/');
+        if ($lastWithSlash === false) {
+            return new Segment($this->value);
+        }
         if (in_array($lastWithSlash, ['/', '/..', '/.'])) {
             return new Segment();
         }
