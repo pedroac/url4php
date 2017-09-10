@@ -190,6 +190,7 @@ class PathTest extends TestCase
      */
     public function testGetBase()
     {
+        $this->assertEquals('world', (new Path('world'))->getBase());
         $this->assertEquals('world', (new Path('/hello/world'))->getBase());
         $this->assertEquals('', (new Path('/hello/world/'))->getBase());
         $this->assertEquals('', (new Path('/'))->getBase());
@@ -214,8 +215,9 @@ class PathTest extends TestCase
     /**
      * @covers pedroac\url\component\Path::getLastSegment
      */
-    public function testGetBaseSegment()
+    public function testGetLastSegment()
     {
+        $this->assertEquals('world', (new Path('world'))->getLastSegment());
         $this->assertEquals('world', (new Path('/hello/world'))->getLastSegment());
         $this->assertEquals('world', (new Path('/hello/world/'))->getLastSegment());
         $this->assertEquals('world', (new Path('world'))->getLastSegment());
@@ -224,6 +226,8 @@ class PathTest extends TestCase
         $this->assertEquals('', (new Path('/'))->getLastSegment());
         $this->assertEquals('', (new Path('//'))->getLastSegment());
         $this->assertEquals('', (new Path('///'))->getLastSegment());
+        $this->assertEquals('.', (new Path('/hello/world/.'))->getLastSegment());
+        $this->assertEquals('..', (new Path('/hello/world/..'))->getLastSegment());
     }
 
 
