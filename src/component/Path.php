@@ -244,18 +244,12 @@ class Path
 
     /**
      * Check if the path is a directory.
+     * 
      * @return bool Is it a directory?
      */
     public function isDirectory(): bool
     {
-        $part = mb_substr($this->value, -3);
-        if ($part === '/..') {
-            return true;
-        }
-        if (mb_substr($this->value, -1) === '/') {
-            return true;
-        }
-        return mb_substr($this->value, -2) === '/.';
+        return in_array(mb_strrchr($this->value, '/'), ['/', '/..', '/.']);
     }
 
     /**
