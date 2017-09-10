@@ -53,7 +53,7 @@ class Segment
      *  - If the path is "world.php", it should be returned "php".
      *  - If the path is "world.tar.gz", it should be returned "gz".
      *  - If the path is ".world", it should be returned "".
-     * 
+     *
      * @return string The extension or an empty string.
      */
     public function getExtension()
